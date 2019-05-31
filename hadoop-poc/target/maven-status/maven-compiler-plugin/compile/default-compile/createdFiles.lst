@@ -1,0 +1,8 @@
+org\galatea\hadooppoc\common\IntSumReducer.class
+org\galatea\hadooppoc\common\JobInitializer$JobInitializerBuilder.class
+org\galatea\hadooppoc\common\TokenizerMapper.class
+org\galatea\hadooppoc\common\MapReducer.class
+org\galatea\hadooppoc\common\HBaseConnection.class
+org\galatea\hadooppoc\common\IMapReducer.class
+org\galatea\hadooppoc\Application.class
+org\galatea\hadooppoc\common\JobInitializer.class

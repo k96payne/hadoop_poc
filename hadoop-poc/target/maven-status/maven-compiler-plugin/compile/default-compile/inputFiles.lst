@@ -1,0 +1,9 @@
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\IMapReducer.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\Application.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\HBaseConnection.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\JobInitializer.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\spark\SwapDataFiles.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\spark\SwapDataAccessor.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\IntSumReducer.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\MapReducer.java
+C:\Users\kpayne\git\hadoop_poc\hadoop-poc\src\main\java\org\galatea\hadooppoc\common\TokenizerMapper.java
