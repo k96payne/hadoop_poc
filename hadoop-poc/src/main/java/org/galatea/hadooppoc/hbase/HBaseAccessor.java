@@ -8,6 +8,8 @@ import org.apache.hadoop.hbase.client.Admin;
 import org.apache.hadoop.hbase.client.Connection;
 import org.apache.hadoop.hbase.client.ConnectionFactory;
 import org.apache.hadoop.hbase.client.HBaseAdmin;
+import org.apache.hadoop.hbase.client.Put;
+import org.apache.hadoop.hbase.client.Table;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -47,7 +49,7 @@ public class HBaseAccessor {
 	}
 
 	@SneakyThrows
-	public void putTable(final HTableDescriptor tableDescriptor) {
+	public void createTable(final HTableDescriptor tableDescriptor) {
 		try (Connection connection = ConnectionFactory.createConnection(configuration)) {
 			connection.getAdmin().createTable(tableDescriptor);
 		}
@@ -59,6 +61,14 @@ public class HBaseAccessor {
 			Admin admin = connection.getAdmin();
 			admin.disableTable(tableName);
 			admin.deleteTable(tableName);
+		}
+	}
+
+	@SneakyThrows
+	public void putTable(final String tableName, final Put put) {
+		try (Connection connection = ConnectionFactory.createConnection(configuration)) {
+			Table table = connection.getTable(TableName.valueOf(tableName));
+			table.put(put);
 		}
 	}
 

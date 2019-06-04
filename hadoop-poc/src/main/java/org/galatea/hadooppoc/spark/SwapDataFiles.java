@@ -31,7 +31,7 @@ public class SwapDataFiles {
 		BACK_OFFICE_POSITIONS("back_office_positions"), CASH("cash"), DEPOT_POSITIONS("depot_positions"),
 		FRONT_OFFICE_POSITIONS("front_office_positions"), ORDER_EXECUTIONS("order_executions"), PRICES("prices"),
 		STOCK_LOAN_POSITIONS("stock_loan_positions"), SWAP_CONTRACTS("swap_contracts"),
-		SWAP_POSITIONS("swap_positions");
+		SWAP_POSITIONS("swap_positions"), INST_REFS("inst_refs");
 
 		private String filename;
 	}
