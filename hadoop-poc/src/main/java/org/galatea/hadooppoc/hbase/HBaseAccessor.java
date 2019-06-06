@@ -13,9 +13,11 @@ import org.apache.hadoop.hbase.client.Table;
 
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
-public class HBaseAccessor {
+@Slf4j
+public class HBaseAccessor implements AutoCloseable {
 
 	private static final String ZOOKEEPER_CLIENT_PORT = "2181";
 	private static final String ZOOKEEPER_QUORUM = "ec2-18-222-172-50.us-east-2.compute.amazonaws.com";
@@ -24,11 +26,16 @@ public class HBaseAccessor {
 	private static final String ZOOKEEPER_ZNODE_PARENT = "/hbase-unsecure";
 
 	private Configuration configuration;
+	private Connection connection;
 
+	@SneakyThrows
 	private HBaseAccessor(final Configuration configuration) {
 		this.configuration = configuration;
+		connection = ConnectionFactory.createConnection(this.configuration);
+
 	}
 
+	@SneakyThrows
 	public static HBaseAccessor newDefaultAccessor() {
 		return new HBaseAccessor(getDefaultInitializedConfiguration());
 	}
@@ -39,7 +46,10 @@ public class HBaseAccessor {
 		configuration.set("hbase.zookeeper.quorum", ZOOKEEPER_QUORUM);
 		configuration.set("hbase.master.hostname", HBASE_MASTER_HOSTNAME);
 		configuration.set("hbase.master.port", HBASE_MASTER_PORT);
-		configuration.set("zookeeper.znode.parent", ZOOKEEPER_ZNODE_PARENT);
+		// configuration.set("zookeeper.znode.parent", ZOOKEEPER_ZNODE_PARENT);
+		configuration.set("hbase.client.retries.number", Integer.toString(1));
+		configuration.set("zookeeper.session.timeout", Integer.toString(60000));
+		configuration.set("zookeeper.recovery.retry", Integer.toString(1));
 		return configuration;
 	}
 
@@ -50,26 +60,33 @@ public class HBaseAccessor {
 
 	@SneakyThrows
 	public void createTable(final HTableDescriptor tableDescriptor) {
-		try (Connection connection = ConnectionFactory.createConnection(configuration)) {
-			connection.getAdmin().createTable(tableDescriptor);
-		}
+		Admin admin = connection.getAdmin();
+		log.info("Starting table creation for {}", tableDescriptor.getNameAsString());
+		admin.createTable(tableDescriptor);
+		admin.close();
 	}
 
 	@SneakyThrows
 	public void deleteTable(final TableName tableName) {
-		try (Connection connection = ConnectionFactory.createConnection(configuration)) {
-			Admin admin = connection.getAdmin();
-			admin.disableTable(tableName);
-			admin.deleteTable(tableName);
-		}
+		Admin admin = connection.getAdmin();
+		log.info("Starting table deletion for {}", tableName.getNameAsString());
+		admin.disableTable(tableName);
+		admin.deleteTable(tableName);
+		admin.close();
 	}
 
 	@SneakyThrows
 	public void putTable(final String tableName, final Put put) {
-		try (Connection connection = ConnectionFactory.createConnection(configuration)) {
-			Table table = connection.getTable(TableName.valueOf(tableName));
-			table.put(put);
-		}
+		log.info("Starting table put for {}", tableName);
+		Table table = connection.getTable(TableName.valueOf(tableName));
+		table.put(put);
+		table.close();
+	}
+
+	@Override
+	public void close() throws Exception {
+		connection.close();
+
 	}
 
 }
