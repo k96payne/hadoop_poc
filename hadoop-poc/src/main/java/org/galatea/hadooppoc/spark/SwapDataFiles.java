@@ -28,10 +28,8 @@ public class SwapDataFiles {
 	@AllArgsConstructor
 	@Getter
 	public static enum SwapDataFilename {
-		BACK_OFFICE_POSITIONS("back_office_positions"), CASH("cash"), DEPOT_POSITIONS("depot_positions"),
-		FRONT_OFFICE_POSITIONS("front_office_positions"), ORDER_EXECUTIONS("order_executions"), PRICES("prices"),
-		STOCK_LOAN_POSITIONS("stock_loan_positions"), SWAP_CONTRACTS("swap_contracts"),
-		SWAP_POSITIONS("swap_positions"), INST_REFS("inst_refs");
+		SWAP_HEADER_200("200-swapHeader"), SWAP_HEADER_201("201-swapHeader"), LEGAL_ENTITY("legalEntity"),
+		INSTRUMENTS("instruments"), COUNTER_PARTIES("counterparties");
 
 		private String filename;
 	}

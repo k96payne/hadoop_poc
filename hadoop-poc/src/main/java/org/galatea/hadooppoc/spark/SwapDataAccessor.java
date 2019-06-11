@@ -29,22 +29,27 @@ public class SwapDataAccessor implements AutoCloseable {
 
 	public void initializeSwapData(final SwapDataFiles files) {
 		log.info("Initializing Swap Data for selected files in path {}", files.getPath());
-		for (SwapDataFilename filename : files.getFilenames()) {
-			Dataset<Row> dataset = sparkSession.read().option("multiLine", true)
-					.json(constructJsonFilePath(files.getPath(), filename.getFilename()));
+		// for (SwapDataFilename filename : files.getFilenames()) {
+//			Dataset<Row> dataset = sparkSession.read().option("multiLine", true)
+//					.json(constructJsonFilePath(files.getPath(), filename.getFilename()));
 
-			// jsonDataset.createOrReplaceTempView(filename.getFilename());
-			// log.info("Spark Session created view ".concat(filename.getFilename()));
+		// jsonDataset.createOrReplaceTempView(filename.getFilename());
+		// log.info("Spark Session created view ".concat(filename.getFilename()));
 
-			// dataset.cache(); // lazy
+		// dataset.cache(); // lazy
 
-			dataframes.put(filename, dataset);
-		}
+		dataframes.put(SwapDataFilename.SWAP_HEADER_200, sparkSession.read()
+				.json(constructJsonFilePath("/cs/data/swap-header/", SwapDataFilename.SWAP_HEADER_200.getFilename())));
+		dataframes.put(SwapDataFilename.COUNTER_PARTIES, sparkSession.read()
+				.json(constructJsonFilePath("/cs/data/counterparty/", SwapDataFilename.COUNTER_PARTIES.getFilename())));
+		dataframes.put(SwapDataFilename.INSTRUMENTS, sparkSession.read()
+				.json(constructJsonFilePath("/cs/data/instrument/", SwapDataFilename.INSTRUMENTS.getFilename())));
+		// }
 	}
 
 	private String constructJsonFilePath(final String path, final String fileName) {
 		StringBuilder builder = new StringBuilder(path);
-		return builder.append(fileName).append(".json").toString();
+		return builder.append(fileName).append(".jsonl").toString();
 	}
 
 	public Dataset<Row> executeSql(final String sqlCommand) {
@@ -60,14 +65,18 @@ public class SwapDataAccessor implements AutoCloseable {
 		dataset.write().mode(SaveMode.Overwrite).json(path);
 	}
 
-	public Dataset<Row> joinSwapPositionsAndContracts() {
-		Dataset<Row> swapPositions = dataframes.get(SwapDataFilename.SWAP_POSITIONS);
-		Dataset<Row> swapContracts = dataframes.get(SwapDataFilename.SWAP_CONTRACTS);
+	public Dataset<Row> getEnrich() {
+		Dataset<Row> swapHeader = dataframes.get(SwapDataFilename.SWAP_HEADER_200);
+		swapHeader.show();
+		Dataset<Row> counterParties = dataframes.get(SwapDataFilename.COUNTER_PARTIES);
+		counterParties.show();
+		Dataset<Row> instruments = dataframes.get(SwapDataFilename.INSTRUMENTS);
+		instruments.show();
 		log.info("Joining Swap Positions and Swap Contracts");
 		long startTime = System.currentTimeMillis();
-		Dataset<Row> dataset = swapPositions.join(swapContracts,
-				swapPositions.col("swap_contract_id").equalTo(swapContracts.col("swap_contract_id")), "fullouter")
-				.drop("swap_contract_id");
+		Dataset<Row> dataset = counterParties.join(swapHeader,
+				counterParties.col("counterPartyId").equalTo(swapHeader.col("counterPartyId")), "inner");
+		// dataset = dataset.join(instruments, dataset.)
 		log.info("Execution took {} milliseconds", System.currentTimeMillis() - startTime);
 		dataset.show();
 		return dataset;
