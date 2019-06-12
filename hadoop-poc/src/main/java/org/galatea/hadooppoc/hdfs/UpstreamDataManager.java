@@ -32,7 +32,7 @@ public class UpstreamDataManager {
 		return new UpstreamDataManager(writer);
 	}
 
-	public void manageData(final File file) {
+	public void writeData(final File file) {
 		JsonObject jsonObject = formatter.getFormattedData(file);
 		writeData(jsonObject);
 	}

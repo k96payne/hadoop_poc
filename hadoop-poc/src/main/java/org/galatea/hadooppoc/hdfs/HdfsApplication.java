@@ -15,10 +15,10 @@ public class HdfsApplication {
 
 		FileSystem fs = FileSystemFactory.newDefaultFileSystem();
 		UpstreamDataManager manager = UpstreamDataManager.newManager(FileWriter.newFileWriter(fs));
-		manager.manageData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/instruments.json"));
-		manager.manageData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/counterparty.json"));
-		manager.manageData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/swapHeader.json"));
-		manager.manageData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/legalEntity.json"));
+		manager.writeData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/instruments.json"));
+		manager.writeData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/counterparty.json"));
+		manager.writeData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/swapHeader.json"));
+		manager.writeData(new File("C://Users/kpayne/Documents/Hadoop_AWS/swap_data_test/legalEntity.json"));
 	}
 
 }
